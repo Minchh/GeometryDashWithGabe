@@ -7,6 +7,9 @@ import javax.swing.JFrame;
 
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
+import java.awt.Graphics2D;
+import java.awt.Graphics;
+import java.awt.Image;
 
 public class Window extends JFrame implements Runnable
 {
@@ -14,8 +17,10 @@ public class Window extends JFrame implements Runnable
     public KL keyListener = null;
 
     private static Window window = null;
-    private Scene currentScene = null;
     private boolean isRunning = true;
+    private Scene currentScene = null;
+    private Image doubleBufferImage = null;
+    private Graphics doubleBufferGraphics = null;
 
     private Window()
     {
@@ -89,5 +94,23 @@ public class Window extends JFrame implements Runnable
     public void update(double deltaTime)
     {
         currentScene.update(deltaTime);
+        draw(getGraphics());
+    }
+
+    public void draw(Graphics g)
+    {
+        if (doubleBufferImage == null)
+        {
+            doubleBufferImage = createImage(getWidth(), getHeight());
+            doubleBufferGraphics = doubleBufferImage.getGraphics();
+        }
+        renderOffscreen((Graphics2D)doubleBufferGraphics);
+
+        g.drawImage(doubleBufferImage, 0, 0, getWidth(), getHeight(), null);
+    }
+
+    public void renderOffscreen(Graphics2D g2)
+    {
+        currentScene.draw(g2);
     }
 }
