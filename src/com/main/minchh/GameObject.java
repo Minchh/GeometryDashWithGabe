@@ -2,6 +2,9 @@ package com.main.minchh;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import java.awt.Graphics2D;
+
 import com.main.dataStructures.Transform;
 
 public class GameObject
@@ -40,6 +43,7 @@ public class GameObject
     public void addComponent(Component c)
     {
         components.add(c);
+        c.gameObject = this;
     }
 
     public void update(double deltaTime)
@@ -47,6 +51,14 @@ public class GameObject
         for (Component c : components)
         {
             c.update(deltaTime);
+        }
+    }
+
+    public void draw(Graphics2D g2)
+    {
+        for (Component c : components)
+        {
+            c.draw(g2);
         }
     }
 }
